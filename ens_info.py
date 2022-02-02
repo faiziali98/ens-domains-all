@@ -3,6 +3,7 @@ from ens import ENS
 from datetime import datetime,timedelta
 import argparse
 import time
+import requests
 
 
 # Run it once
@@ -11,24 +12,35 @@ def get_all_domains(w3, ns):
 
 	print("Starting scan for domains, all domains will be written on domains.txt file")
 
-	with open('domains.txt', 'a') as f:
-		# Start from current blocknumber and go down w3.eth.blockNumber
-		for x in range(9380436, w3.eth.blockNumber):
-			transactions = w3.eth.get_block(x)
+	
+	# Start from current blocknumber and go down w3.eth.blockNumber
+	for x in range(9380380, w3.eth.blockNumber, 100000):
 
-			# iterate over all the transactions
-			for trx in transactions['transactions']:
-				trx_data = w3.eth.get_transaction(trx)
+		page = 1
 
+		while True:
+			url = f'https://api.etherscan.io/api?module=account&action=txlist&address={address}&startblock={x}&endblock={x+100000}&page={page}&offset=100&apikey=YSI4UU7642M1V7QSF7E9UT1FQBYVANNW7U'
+			res = requests.get(url, timeout=12.50)
 
-				# Get domain name from registrar
-				if trx_data['to'] == address:
-					f.write(f"{ns.name(trx_data['from'])}\n")
-					
+			print(url)
 
-			# Log after every 100 blocks
-			if x%100 == 0:
-				print(x)
+			if res.status_code == 200:
+				data = res.json()
+
+				if data["message"] == "No transactions found":
+					break
+				else:
+					with open('domains.txt', 'a') as f:
+						for result in data['result']:
+							domain_found = ns.name(result['from'])
+
+							if domain_found:
+								f.write(f"{domain_found}\n")
+
+				page += 1
+
+		if x%100 == 0:
+			print(x)
 
 
 # Get expiry of domain from smart contract
