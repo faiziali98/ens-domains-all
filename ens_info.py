@@ -14,7 +14,7 @@ def get_all_domains(w3, ns):
 
 	
 	# Start from current blocknumber and go down w3.eth.blockNumber
-	for x in range(14128789, w3.eth.blockNumber, 100000):
+	for x in range(9380380, w3.eth.blockNumber, 100000):
 
 		page = 1
 		
