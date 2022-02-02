@@ -14,13 +14,15 @@ def get_all_domains(w3, ns):
 
 	
 	# Start from current blocknumber and go down w3.eth.blockNumber
-	for x in range(9380380, w3.eth.blockNumber, 100000):
+	for x in range(14128789, w3.eth.blockNumber, 100000):
 
 		page = 1
+		
 
 		while True:
 			url = f'https://api.etherscan.io/api?module=account&action=txlist&address={address}&startblock={x}&endblock={x+100000}&page={page}&offset=100&apikey=YSI4UU7642M1V7QSF7E9UT1FQBYVANNW7U'
 			res = requests.get(url, timeout=12.50)
+			unique_domains = []
 
 			print(url)
 
@@ -30,14 +32,16 @@ def get_all_domains(w3, ns):
 				if data["message"] == "No transactions found":
 					break
 				else:
-					with open('domains.txt', 'a') as f:
-						for result in data['result']:
-							domain_found = ns.name(result['from'])
-
-							if domain_found:
-								f.write(f"{domain_found}\n")
+					for result in data['result']:
+						domain_found = ns.name(result['from'])
+						if domain_found is not None and domain_found not in unique_domains:
+							unique_domains.append(domain_found)
 
 				page += 1
+
+				with open('domains.txt', 'a+') as f:
+					for unique_domain in unique_domains:
+						f.write(f"{unique_domain}\n")
 
 		if x%100 == 0:
 			print(x)
