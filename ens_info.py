@@ -41,11 +41,11 @@ def get_all_domains(w3, ns):
 						if domain_found is not None and domain_found not in unique_domains:
 							unique_domains.append(domain_found)
 
-				page += 1
-
 				with open('domains.txt', 'a+') as f:
 					for unique_domain in unique_domains:
 						f.write(f"{unique_domain}\n")
+						
+			page += 1
 
 		if x%100 == 0:
 			print(x)
