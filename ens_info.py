@@ -24,6 +24,10 @@ def get_all_domains(w3, ns):
 			res = requests.get(url, timeout=12.50)
 			unique_domains = []
 
+			with open('last_call.txt', 'w') as lc:
+				lc.write(url)
+
+
 			print(url)
 
 			if res.status_code == 200:
