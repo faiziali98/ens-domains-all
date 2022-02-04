@@ -119,7 +119,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="PROG")
 
 	# Adding two arguments
-	parser.add_argument("--id", default="56d62a0bc884483fbc7a6b37e7e4a117", help="Input infura project id")
+	parser.add_argument("--id", default="8bc45d5a46fd4bef97abf7a1a90dce1d", help="Input infura project id")
 	parser.add_argument("--t", default="get_domains", help="Enter run type")
 	parser.add_argument("--d", default="60", help="Enter run type")
 	args = parser.parse_args()
