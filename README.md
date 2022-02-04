@@ -3,9 +3,8 @@ Get all ens domains that are about to expire.
 
 # Infura IDs:
 
-1. 2735dcf2e7694898afdd1c3fabe09a4b
-2. 8bc45d5a46fd4bef97abf7a1a90dce1d
-3. 56d62a0bc884483fbc7a6b37e7e4a117
+1. ef96cbfd2f904d4e878497874a2dfd38
+2. 56d62a0bc884483fbc7a6b37e7e4a117
 
 # Usage:
 
