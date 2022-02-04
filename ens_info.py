@@ -12,13 +12,19 @@ def get_all_domains(w3, ns):
 
 	print("Starting scan for domains, all domains will be written on domains.txt file")
 
+	x_start = 9488108
+	page = 3
+
+	with open('last_call.txt', 'r') as f_inp:
+		line = f_inp.readlines()[-1]
+		if line:
+			splits = line.split(',')
+			x_start = int(splits[0])
+			page = int(splits[1])
+
 	
 	# Start from current blocknumber and go down w3.eth.blockNumber
-	for x in range(9380380, w3.eth.blockNumber, 100000):
-
-		page = 1
-		
-
+	for x in range(x_start, w3.eth.blockNumber, 100000):
 		while True:
 			url = f'https://api.etherscan.io/api?module=account&action=txlist&address={address}&startblock={x}&endblock={x+100000}&page={page}&offset=100&apikey=YSI4UU7642M1V7QSF7E9UT1FQBYVANNW7U'
 			res = requests.get(url, timeout=12.50)
@@ -26,6 +32,7 @@ def get_all_domains(w3, ns):
 
 			with open('last_call.txt', 'w') as lc:
 				lc.write(url)
+				lc.write(f'\n{x},{page}')
 
 
 			print(url)
@@ -34,6 +41,7 @@ def get_all_domains(w3, ns):
 				data = res.json()
 
 				if data["message"] == "No transactions found":
+					page = 1
 					break
 				else:
 					for result in data['result']:
@@ -41,15 +49,19 @@ def get_all_domains(w3, ns):
 						if domain_found is not None and domain_found not in unique_domains:
 							unique_domains.append(domain_found)
 
+				
+
 				with open('domains.txt', 'a+') as f:
 					for unique_domain in unique_domains:
 						f.write(f"{unique_domain}\n")
-						
+
 			page += 1
 
 		if x%100 == 0:
 			print(x)
 
+
+	print("Finished scanning the domains")
 
 # Get expiry of domain from smart contract
 def get_domain_expiry(domain_name, grace_period, contract_instance):
