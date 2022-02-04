@@ -48,11 +48,12 @@ def get_all_domains(w3, ns):
 							break
 						else:
 							for result in data['result']:
-								domain_found = ns.name(result['from'])
-								if domain_found is not None and domain_found not in unique_domains:
-									unique_domains.append(domain_found)
-
-						
+								try:
+									domain_found = ns.name(result['from'])
+									if domain_found is not None and domain_found not in unique_domains:
+										unique_domains.append(domain_found)
+								except:
+									continue
 
 						with open('domains.txt', 'a+') as f:
 							for unique_domain in unique_domains:
