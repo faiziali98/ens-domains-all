@@ -28,6 +28,8 @@ def get_all_domains(w3, ns):
 			
 			# Start from current blocknumber and go down w3.eth.blockNumber
 			for x in range(x_start, w3.eth.blockNumber, 100000):
+				unique_addresses = []
+				
 				while True:
 					url = f'https://api.etherscan.io/api?module=account&action=txlist&address={address}&startblock={x}&endblock={x+100000}&page={page}&offset=100&apikey=YSI4UU7642M1V7QSF7E9UT1FQBYVANNW7U'
 					res = requests.get(url, timeout=12.50)
@@ -49,9 +51,13 @@ def get_all_domains(w3, ns):
 						else:
 							for result in data['result']:
 								try:
-									domain_found = ns.name(result['from'])
-									if domain_found is not None and domain_found not in unique_domains:
-										unique_domains.append(domain_found)
+									address = result['from']
+
+									if address not in unique_addresses:
+										domain_found = ns.name(address)
+										unique_addresses.append(address)
+										if domain_found:
+											unique_domains.append(domain_found)
 								except:
 									continue
 
