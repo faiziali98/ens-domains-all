@@ -9,7 +9,7 @@ import sys
 
 # Run it once
 def get_all_domains(w3, ns):
-	address = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
+	contract_address = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e'
 
 	print("Starting scan for domains, all domains will be written on domains.txt file")
 
@@ -29,9 +29,9 @@ def get_all_domains(w3, ns):
 			# Start from current blocknumber and go down w3.eth.blockNumber
 			for x in range(x_start, w3.eth.blockNumber, 100000):
 				unique_addresses = []
-				
+
 				while True:
-					url = f'https://api.etherscan.io/api?module=account&action=txlist&address={address}&startblock={x}&endblock={x+100000}&page={page}&offset=100&apikey=YSI4UU7642M1V7QSF7E9UT1FQBYVANNW7U'
+					url = f'https://api.etherscan.io/api?module=account&action=txlist&address={contract_address}&startblock={x}&endblock={x+100000}&page={page}&offset=100&apikey=YSI4UU7642M1V7QSF7E9UT1FQBYVANNW7U'
 					res = requests.get(url, timeout=12.50)
 					unique_domains = []
 
@@ -49,6 +49,7 @@ def get_all_domains(w3, ns):
 							page = 1
 							break
 						else:
+							print(len(data['result']))
 							for result in data['result']:
 								try:
 									address = result['from']
@@ -58,8 +59,10 @@ def get_all_domains(w3, ns):
 										unique_addresses.append(address)
 										if domain_found:
 											unique_domains.append(domain_found)
+								except KeyboardInterrupt:
+									sys.exit()
 								except:
-									continue
+									print("Infura Max Reached")
 
 						with open('domains.txt', 'a+') as f:
 							for unique_domain in unique_domains:
